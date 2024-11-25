@@ -11,6 +11,10 @@ package-lock.json
 *.sqlite3
 *.sqlite3-journal
 
+# Uploads
+/uploads/*
+!uploads/.gitkeep
+
 # Logs
 logs
 *.log

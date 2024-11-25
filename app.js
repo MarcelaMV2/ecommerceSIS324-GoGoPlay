@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(CartController.getCartItemCount);
+app.get('/uploads/:filename', UserController.getImage);
 
 // Verificación de la carpeta uploads
 const fs = require('fs');
@@ -853,6 +854,19 @@ app.use((err, req, res, next) => {
       return res.status(500).render('error', {
         message: 'Error de conexión con la base de datos'
       });
+    }
+    next(err);
+});
+
+// Después de tus otras configuraciones
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({
+          error: 'El archivo es demasiado grande. Máximo 5MB'
+        });
+      }
+      return res.status(400).json({ error: err.message });
     }
     next(err);
   });
